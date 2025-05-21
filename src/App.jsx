@@ -6,22 +6,23 @@ function FacebookLoginComponent() {
     // Facebook SDK initialization
     window.fbAsyncInit = function () {
       window.FB.init({
-        appId: import.meta.env.VITE_FACEBOOK_APP_ID, // .env માં KEY હોવો જોઈએ
+        appId: import.meta.env.VITE_FACEBOOK_APP_ID,
         cookie: true,
         xfbml: true,
-        version: 'v19.0',
+        version: 'v18.0', // ⚠️ આ લાઈનમાં સમસ્યા છે
       });
-    };
+    }
 
-    // Load Facebook SDK script dynamically (optional here since it's in index.html)
-    ((d, s, id) => {
-      let js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = 'https://connect.facebook.net/en_US/sdk.js';
-      fjs.parentNode.insertBefore(js, fjs);
-    })(document, 'script', 'facebook-jssdk');
-  }, []);
+
+      // Load Facebook SDK script dynamically (optional here since it's in index.html)
+      ((d, s, id) => {
+        let js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'facebook-jssdk');
+    }, []);
 
   const handleFacebookLogin = () => {
     window.FB.login(function (response) {
