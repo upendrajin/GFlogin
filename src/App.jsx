@@ -6,14 +6,14 @@ function FacebookLoginComponent() {
     // Facebook SDK initialization
     window.fbAsyncInit = function () {
       window.FB.init({
-        appId: import.meta.env.VITE_FACEBOOK_APP_ID, // Make sure this env variable is defined
+        appId: import.meta.env.VITE_FACEBOOK_APP_ID, // .env માં KEY હોવો જોઈએ
         cookie: true,
         xfbml: true,
         version: 'v19.0',
       });
     };
 
-    // Load Facebook SDK script
+    // Load Facebook SDK script dynamically (optional here since it's in index.html)
     ((d, s, id) => {
       let js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
@@ -24,10 +24,12 @@ function FacebookLoginComponent() {
   }, []);
 
   const handleFacebookLogin = () => {
-    window.FB.login(
-      async function (response) {
-        if (response.authResponse) {
-          const { accessToken, userID } = response.authResponse;
+    window.FB.login(function (response) {
+      if (response.authResponse) {
+        const { accessToken, userID } = response.authResponse;
+
+        // Async block inside sync function
+        (async () => {
           try {
             const res = await axios.post('http://localhost:3001/api/users/oauth/facebook', {
               accessToken,
@@ -38,10 +40,9 @@ function FacebookLoginComponent() {
           } catch (err) {
             console.error('❌ Facebook login error:', err.response?.data || err.message);
           }
-        }
-      },
-      { scope: 'public_profile,email' }
-    );
+        })();
+      }
+    }, { scope: 'public_profile,email' });
   };
 
   return (
