@@ -1,58 +1,26 @@
 import { useEffect } from 'react';
 import axios from 'axios';
-import './App.css';
 
-function App() {
-  const handleGoogleResponse = async (response) => {
-    try {
-      const res = await axios.post('http://localhost:3001/api/users/oauth/google', {
-        token: response.credential,
-      });
-      console.log('✅ Google login success:', res.data);
-      localStorage.setItem('userToken', res.data.userToken);
-    } catch (err) {
-      console.error('❌ Google login error:', err.response?.data || err.message);
-    }
-  };
-
+function FacebookLoginComponent() {
   useEffect(() => {
-    // Facebook SDK init
+    // Facebook SDK initialization
     window.fbAsyncInit = function () {
       window.FB.init({
-        appId: import.meta.env.VITE_FACEBOOK_APP_ID,
+        appId: import.meta.env.VITE_FACEBOOK_APP_ID, // Make sure this env variable is defined
         cookie: true,
         xfbml: true,
         version: 'v19.0',
       });
     };
 
-    // Load Facebook SDK
+    // Load Facebook SDK script
     ((d, s, id) => {
       let js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      js.src = 'https://connect.facebook.net/en_US/sdk.js';
       fjs.parentNode.insertBefore(js, fjs);
     })(document, 'script', 'facebook-jssdk');
-
-    // Google Login init
-    const initializeGoogle = () => {
-      if (window.google && window.google.accounts) {
-        window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          callback: (response) => handleGoogleResponse(response), // FIXED
-        });
-
-        window.google.accounts.id.renderButton(
-          document.getElementById('google-login-btn'),
-          { theme: 'outline', size: 'large' }
-        );
-      } else {
-        setTimeout(initializeGoogle, 300);
-      }
-    };
-
-    initializeGoogle();
   }, []);
 
   const handleFacebookLogin = () => {
@@ -77,20 +45,10 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>React 19 + Vite Social Login</h1>
-
-      <div style={{ margin: '20px' }}>
-        <div id="google-login-btn">
-          <button disabled>Loading Google Login...</button>
-        </div>
-      </div>
-
-      <div style={{ margin: '20px' }}>
-        <button onClick={handleFacebookLogin}>Login with Facebook</button>
-      </div>
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <button onClick={handleFacebookLogin}>Login with Facebook</button>
     </div>
   );
 }
 
-export default App;
+export default FacebookLoginComponent;
