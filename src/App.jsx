@@ -26,12 +26,21 @@ function App() {
       });
     };
 
+    // Load Facebook SDK
+    ((d, s, id) => {
+      let js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, 'script', 'facebook-jssdk');
+
     // Google Login init
     const initializeGoogle = () => {
       if (window.google && window.google.accounts) {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          callback: handleGoogleResponse,
+          callback: (response) => handleGoogleResponse(response), // FIXED
         });
 
         window.google.accounts.id.renderButton(
